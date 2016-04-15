@@ -17,8 +17,6 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.lang.builder.EqualsBuilder;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.codehaus.jackson.annotate.JsonIgnore;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
@@ -30,8 +28,6 @@ import org.springframework.util.StringUtils;
 public class PersonName extends BaseOpenmrsData implements java.io.Serializable, Cloneable, Comparable<PersonName> {
 	
 	public static final long serialVersionUID = 4353L;
-	
-	private static final Log log = LogFactory.getLog(PersonName.class);
 	
 	// Fields
 	
@@ -477,9 +473,9 @@ public class PersonName extends BaseOpenmrsData implements java.io.Serializable,
 	public static class DefaultComparator implements Comparator<PersonName> {
 		
 		public int compare(PersonName pn1, PersonName pn2) {
-			int ret = pn1.isVoided().compareTo(pn2.isVoided());
+			int ret = pn1.getVoided().compareTo(pn2.getVoided());
 			if (ret == 0) {
-				ret = pn2.isPreferred().compareTo(pn1.isPreferred());
+				ret = pn2.getPreferred().compareTo(pn1.getPreferred());
 			}
 			if (ret == 0) {
 				ret = OpenmrsUtil.compareWithNullAsGreatest(pn1.getFamilyName(), pn2.getFamilyName());

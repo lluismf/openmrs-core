@@ -42,7 +42,6 @@ import org.openmrs.User;
 import org.openmrs.api.context.Context;
 import org.openmrs.hl7.HL7Constants;
 import org.openmrs.hl7.HL7InQueueProcessor;
-import org.openmrs.hl7.HL7Service;
 import org.openmrs.obs.ComplexData;
 import org.openmrs.util.OpenmrsConstants;
 import org.openmrs.util.OpenmrsUtil;
@@ -178,7 +177,6 @@ public class ORUR01Handler implements Application {
 	 * @throws HL7Exception
 	 * @should process multiple NK1 segments
 	 */
-	@SuppressWarnings("deprecation")
 	private Message processORU_R01(ORU_R01 oru) throws HL7Exception {
 		
 		// TODO: ideally, we would branch or alter our behavior based on the
@@ -202,8 +200,6 @@ public class ORUR01Handler implements Application {
 		if (log.isDebugEnabled()) {
 			log.debug("Found HL7 message in inbound queue with control id = " + messageControlId);
 		}
-		
-		HL7Service hl7Service = Context.getHL7Service();
 		
 		// create the encounter
 		Patient patient = getPatient(pid);

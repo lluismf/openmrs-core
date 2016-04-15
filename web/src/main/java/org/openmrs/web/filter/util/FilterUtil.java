@@ -69,8 +69,6 @@ public class FilterUtil {
 						}
 					}
 					
-					//close statement
-					statement.close();
 				}
 				
 				// if locale is still null we should try to retrieve system locale global property's value
@@ -83,7 +81,7 @@ public class FilterUtil {
 			}
 			finally {
 				try {
-					if (statement != null && !statement.isClosed()) {
+					if (statement != null) {
 						statement.close();
 					}
 				}

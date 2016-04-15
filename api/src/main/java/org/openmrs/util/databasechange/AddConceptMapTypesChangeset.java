@@ -72,7 +72,6 @@ public class AddConceptMapTypesChangeset implements CustomTaskChange {
 	 */
 	private void runBatchInsert(JdbcConnection connection) throws CustomChangeException {
 		PreparedStatement pStmt = null;
-		ResultSet rs = null;
 		try {
 			connection.setAutoCommit(false);
 			
@@ -180,15 +179,6 @@ public class AddConceptMapTypesChangeset implements CustomTaskChange {
 			catch (DatabaseException e) {
 				log.warn("Failed to reset auto commit back to true", e);
 			}
-			if (rs != null) {
-				try {
-					rs.close();
-				}
-				catch (SQLException e) {
-					log.warn("Failed to close the resultset object");
-				}
-			}
-			
 			if (pStmt != null) {
 				try {
 					pStmt.close();

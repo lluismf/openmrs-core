@@ -39,8 +39,6 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import liquibase.changelog.ChangeSet;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -73,6 +71,8 @@ import org.openmrs.web.filter.util.ErrorMessageConstants;
 import org.openmrs.web.filter.util.FilterUtil;
 import org.springframework.util.StringUtils;
 import org.springframework.web.context.ContextLoader;
+
+import liquibase.changelog.ChangeSet;
 
 /**
  * This is the first filter that is processed. It is only active when starting OpenMRS for the very
@@ -1161,7 +1161,6 @@ public class InitializationFilter extends StartupFilter {
 			statement = connection.createStatement();
 			
 			int updateDelta = statement.executeUpdate(replacedSql);
-			statement.close();
 			return updateDelta;
 			
 		}
@@ -1183,20 +1182,18 @@ public class InitializationFilter extends StartupFilter {
 		}
 		finally {
 			try {
-				if (statement != null && !statement.isClosed()) {
+				if (statement != null) {
 					statement.close();
 				}
-			}
-			catch (SQLException e) {
+			} catch (SQLException e) {
 				log.warn("Error while closing statement");
 			}
 			try {
-				
+
 				if (connection != null) {
 					connection.close();
 				}
-			}
-			catch (Exception e) {
+			} catch (Exception e) {
 				log.warn("Error while closing connection", e);
 			}
 		}
@@ -1567,10 +1564,6 @@ public class InitializationFilter extends StartupFilter {
 									InputStream inData = TestInstallUtil.getResourceInputStream(wizardModel.remoteUrl
 									        + RELEASE_TESTING_MODULE_PATH + "generateTestDataSet.form",
 									    wizardModel.remoteUsername, wizardModel.remotePassword);
-									if (inData == null) {
-										reportError(ErrorMessageConstants.ERROR_DB_IMPORT_TEST_DATA, DEFAULT_PAGE, "");
-										return;
-									}
 									
 									setCompletedPercentage(40);
 									setMessage("Loading imported test data...");

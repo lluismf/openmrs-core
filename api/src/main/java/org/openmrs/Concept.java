@@ -363,7 +363,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 	 */
 	public void setPreferredName(ConceptName preferredName) {
 		
-		if (preferredName == null || preferredName.isVoided() || preferredName.isIndexTerm()) {
+		if (preferredName == null || preferredName.getVoided() || preferredName.isIndexTerm()) {
 			throw new APIException("Concept.error.preferredName.null", (Object[]) null);
 		} else if (preferredName.getLocale() == null) {
 			throw new APIException("Concept.name.locale.null", (Object[]) null);
@@ -545,7 +545,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 				return matches.get(0);
 			} else if (matches.size() > 1) {
 				for (ConceptName match : matches) {
-					if (match.isLocalePreferred()) {
+					if (match.getLocalePreferred()) {
 						return match;
 					}
 				}
@@ -654,7 +654,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 		}
 		
 		for (ConceptName nameInLocale : getNames(forLocale)) {
-			if (ObjectUtils.nullSafeEquals(nameInLocale.isLocalePreferred(), true)) {
+			if (ObjectUtils.nullSafeEquals(nameInLocale.getLocalePreferred(), true)) {
 				return nameInLocale;
 			}
 		}
@@ -663,7 +663,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 		ConceptName bestMatch = null;
 		
 		for (ConceptName nameInLocale : getPartiallyCompatibleNames(forLocale)) {
-			if (ObjectUtils.nullSafeEquals(nameInLocale.isLocalePreferred(), true)) {
+			if (ObjectUtils.nullSafeEquals(nameInLocale.getLocalePreferred(), true)) {
 				Locale nameLocale = nameInLocale.getLocale();
 				if (forLocale.getLanguage().equals(nameLocale.getLanguage())) {
 					return nameInLocale;
@@ -798,7 +798,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 	public void setFullySpecifiedName(ConceptName fullySpecifiedName) {
 		if (fullySpecifiedName == null || fullySpecifiedName.getLocale() == null) {
 			throw new APIException("Concept.name.locale.null", (Object[]) null);
-		} else if (fullySpecifiedName.isVoided()) {
+		} else if (fullySpecifiedName.getVoided()) {
 			throw new APIException("Concept.error.fullySpecifiedName.null", (Object[]) null);
 		}
 		
@@ -1012,7 +1012,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 		} else {
 			if (names != null) {
 				for (ConceptName cn : names) {
-					if (!cn.isVoided()) {
+					if (!cn.getVoided()) {
 						ret.add(cn);
 					}
 				}
@@ -1233,11 +1233,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 	 */
 	public void addDescription(ConceptDescription description) {
 		if (description != null && StringUtils.isNotBlank(description.getDescription())) {
-			if (getDescriptions() == null) {
-				descriptions = new HashSet<ConceptDescription>();
-				description.setConcept(this);
-				descriptions.add(description);
-			} else if (!descriptions.contains(description)) {
+			if (!descriptions.contains(description)) {
 				description.setConcept(this);
 				descriptions.add(description);
 			}
@@ -1251,11 +1247,7 @@ public class Concept extends BaseOpenmrsObject implements Auditable, Retireable,
 	 * @return true if the entity was removed, false otherwise
 	 */
 	public boolean removeDescription(ConceptDescription description) {
-		if (getDescriptions() != null) {
-			return descriptions.remove(description);
-		} else {
-			return false;
-		}
+		return getDescriptions().remove(description);
 	}
 	
 	/**
